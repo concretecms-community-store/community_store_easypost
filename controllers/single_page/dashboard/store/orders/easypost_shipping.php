@@ -36,6 +36,9 @@ class EasypostShipping extends DashboardPageController {
             $this->set('shoppingDisabled', true);
         }
 
+    }
+
+    private function initkey() {
         $mode = Config::get('community_store_easypost.mode');
 
         if ($mode == 'test') {
@@ -44,42 +47,80 @@ class EasypostShipping extends DashboardPageController {
             $key = Config::get('community_store_easypost.liveKey');
         }
 
-
         \EasyPost\EasyPost::setApiKey($key);
+    }
 
+    public function order($oID) {
+        $this->initkey();
+        $order = StoreOrder::getByID($oID);
 
-
-        if ($this->post() && $this->post('action') == 'buy') {
-            $order = StoreOrder::getByID($this->post('oID'));
-
-            $shipmentid = $order->getShipmentID();
-            $rateid = $order->getRateID();
-
-            $shipment = \EasyPost\Shipment::retrieve($shipmentid);
-
-            $shipment->buy(array('rate' => array('id' => $rateid)));
-            $order->setTrackingID($shipment->tracker->id);
-            $order->setTrackingCode($shipment->tracking_code);
-            $order->setTrackingURL($shipment->tracker->public_url);
-            $order->setCarrier($shipment->tracker->carrier);
-            $order->save();
+        if ($order) {
+            $this->set("order", $order);
+        } else {
+            $this->redirect('/dashboard/store/orders/easypost_shipping');
         }
 
-        if ($this->get('action') == 'viewlabel') {
-            $order = StoreOrder::getByID($this->get('oID'));
-            $shipmentid = $order->getShipmentID();
-            $shipment = \EasyPost\Shipment::retrieve($shipmentid);
-            $this->redirect($shipment->postage_label->label_url);
+        $shipmentid = $order->getShipmentID();
+
+        if ($shipmentid) {
+            try {
+
+                $shipment = \EasyPost\Shipment::retrieve($shipmentid);
+            } catch (\EasyPost\Error $e) {
+                $this->error = $e->getMessage();
+            }
+
+            if ($this->post('action') == 'refund') {
+                try {
+                    $shipment->refund();
+                    $this->set('success', t('Refund Requested'));
+                } catch (\EasyPost\Error $e) {
+                    $this->error = $e->getMessage();
+                }
+
+            }
+
+            if ($this->post('action') == 'buy') {
+                $rateid = $order->getRateID();
+
+                try {
+                    $shipment->buy(array('rate' => array('id' => $rateid)));
+                    $order->setTrackingID($shipment->tracker->id);
+                    $order->setTrackingCode($shipment->tracking_code);
+                    $order->setTrackingURL($shipment->tracker->public_url);
+                    $order->setCarrier($shipment->tracker->carrier);
+                    $order->save();
+                    $this->set('success', t('Shipping Purchased'));
+                } catch(\EasyPost\Error $e) {
+                    $this->error = $e->getMessage();
+                }
+            }
+
+
         }
 
-        if ($this->get('action') == 'refund') {
-            $order = StoreOrder::getByID($this->get('oID'));
-            $shipmentid = $order->getShipmentID();
-            $shipment = \EasyPost\Shipment::retrieve($shipmentid);
-            $shipment->refund();
-            print_r($shipment);
+        if ($this->post('action') == 'buytracking') {
+
+            try {
+                $tracker = \EasyPost\Tracker::create(array(
+                    "tracking_code" => $this->post('trackingCode'),
+                    "carrier" => $this->post('carrier')
+                ));
+
+                $order->setTrackingID($tracker->id);
+                $order->setTrackingCode($tracker->tracking_code);
+                $order->setTrackingURL($tracker->public_url);
+                $order->setCarrier($this->post('carrier'));
+                $order->save();
+
+                $this->set('success', t('Tracking Purchased'));
+            } catch(\EasyPost\Error $e) {
+                $this->error = $e->getMessage();
+            }
         }
 
+        $this->set('shipment', $shipment);
+        $this->set('pageTitle', t("EasyPost Shipping Details for Order #") . $order->getOrderID());
     }
 
 }

@@ -2,8 +2,6 @@
 <?php $form = \Core::make('helper/form'); ?>
 
 
-
-
 <form action="<?=URL::to('/dashboard/store/settings/easypost_settings','save')?>" method="post">
     <div class="form-group">
         <?= $form->label('mode',t("Mode")); ?>
