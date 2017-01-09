@@ -466,7 +466,7 @@ class EasypostShippingMethod extends ShippingMethodTypeMethod
                 $shipping_fingerprint = md5(serialize($shipping_fingerprint_data));
 
                 $cache = \Core::make('cache/expensive');
-                $shippingcache = $cache->getItem('cs_easypost_' . $shipping_fingerprint);
+                $shippingcache = $cache->getItem('cs_easypost/' . $shipping_fingerprint);
 
                 if ($shippingcache->isMiss()) {
                     $shippingcache->lock();
@@ -490,7 +490,11 @@ class EasypostShippingMethod extends ShippingMethodTypeMethod
                         )
                     );
 
-                    $shippingcache->set($shipment, 60 * 60); // expire after an hour
+                    if (version_compare(\Config::get('concrete.version'), '8.0', '>=')) {
+                        $shippingcache->set($shipment)->expiresAfter(60 * 60)->save(); // expire after 1 hour
+                    } else {
+                        $shippingcache->set($shipment, 60 * 60); // expire after an hour
+                    }
 
                 } else {
                     $shipment = $shippingcache->get();
