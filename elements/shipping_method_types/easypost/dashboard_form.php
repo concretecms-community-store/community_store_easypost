@@ -90,10 +90,10 @@ extract($vars); ?>
 
         <h3><?= t('No rate fallback'); ?></h3>
 
-        <label>
-            <?= $form->checkbox('noMatch','1', $smtm->getNoMatch(), array('id'=>'noMatch')); ?>
-            <?= t('If no shipping rate is found, offer fallback option');?>
-        </label>
+        <p><label>
+                <?= $form->checkbox('noMatch','1', $smtm->getNoMatch(), array('id'=>'noMatch')); ?>
+                <?= t('Offer fallback option when no offers');?>
+        </label></p>
 
         <div id="nomatchfields" style="<?= ($smtm->getNoMatch() ? '' : 'display: none;') ;?>">
             <div class="form-group">
@@ -108,7 +108,12 @@ extract($vars); ?>
 
             <div class="form-group">
                 <?= $form->label('noMatchRate',t("Rate")); ?>
-                <?= $form->text('noMatchRate',$smtm->getNoMatchRate()); ?>
+                <div class="input-group">
+                    <div class="input-group-addon">
+                        <?=  Config::get('community_store.symbol');?>
+                    </div>
+                    <?= $form->text('noMatchRate',$smtm->getNoMatchRate()); ?>
+                </div>
             </div>
         </div>
 

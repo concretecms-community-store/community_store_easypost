@@ -16,7 +16,7 @@ use Concrete\Package\CommunityStore\Src\CommunityStore\Shipping\Method\ShippingM
 class EasypostShippingMethod extends ShippingMethodTypeMethod
 {
     public function getShippingMethodTypeName() {
-        return t('Easypost Shipping');
+        return t('EasyPost Shipping');
     }
 
     /**
