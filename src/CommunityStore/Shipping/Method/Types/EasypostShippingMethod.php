@@ -442,7 +442,7 @@ class EasypostShippingMethod extends ShippingMethodTypeMethod
                 $laff->pack($boxes);
                 $dimensions = $laff->get_container_dimensions();
 
-                $unit = \Config::get('community_store.weightUnit');
+                $unit = \Config::get('community_store.sizeUnit');
                 $multiplier = 1;
 
                 // convert to inches for gateway
@@ -459,6 +459,18 @@ class EasypostShippingMethod extends ShippingMethodTypeMethod
                     "width" => $dimensions['width'] * $multiplier,
                     "height" => $dimensions['height'] * $multiplier,
                     "weight" => $totalWeight);
+
+                if (!$parcel_sizes['length']) {
+                    $parcel_sizes['length'] = $this->getFallbackLength();
+                }
+
+                if (!$parcel_sizes['width']) {
+                    $parcel_sizes['width'] = $this->getFallbackWidth();
+                }
+
+                if (!$parcel_sizes['height']) {
+                    $parcel_sizes['height'] = $this->getFallbackHeight();
+                }
 
                 //print_r($parcel_sizes);
 
@@ -477,6 +489,7 @@ class EasypostShippingMethod extends ShippingMethodTypeMethod
                     $from_address = \EasyPost\Address::create(
                         $from_address_values
                     );
+
 
                     $parcel = \EasyPost\Parcel::create(
                         $parcel_sizes
@@ -500,11 +513,12 @@ class EasypostShippingMethod extends ShippingMethodTypeMethod
                     $shipment = $shippingcache->get();
                 }
             } catch(\EasyPost\Error $e) {
+                //$e->prettyPrint();
                 $invalid = true;
             }
+
         }
-
-
+        
         $offers = array();
 
         if (!$invalid && $shipment && $shipment->rates && count($shipment->rates) > 0) {
