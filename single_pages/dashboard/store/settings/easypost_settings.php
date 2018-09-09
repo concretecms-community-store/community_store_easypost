@@ -18,6 +18,11 @@
         <?= $form->text('liveKey',$livekey); ?>
     </div>
 
+    <div class="form-group">
+        <?= $form->label('multipleParcels',t("Allow multiple parcel shipping (not supported by all carriers)")); ?>
+        <?= $form->select('multipleParcels', array('0'=>t('No'),'1'=>t('Yes')),$mode); ?>
+    </div>
+
     <div class="ccm-dashboard-form-actions-wrapper">
         <div class="ccm-dashboard-form-actions">
             <button class="pull-right btn btn-success" type="submit" ><?= t('Save Settings')?></button>

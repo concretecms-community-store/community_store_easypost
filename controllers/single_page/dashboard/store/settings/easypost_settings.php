@@ -14,10 +14,12 @@ class EasypostSettings extends DashboardPageController {
         $mode = Config::get('community_store_easypost.mode');
         $liveKey = Config::get('community_store_easypost.liveKey');
         $testKey = Config::get('community_store_easypost.testKey');
+        $multipleParcels = Config::get('community_store_easypost.multipleParcels');
 
         $this->set('mode', $mode);
         $this->set('liveKey', $liveKey);
         $this->set('testKey', $testKey);
+        $this->set('multipleParcels', $multipleParcels);
     }
 
     public function save() {
@@ -27,6 +29,7 @@ class EasypostSettings extends DashboardPageController {
         Config::save('community_store_easypost.mode',$args['mode']);
         Config::save('community_store_easypost.liveKey',$args['liveKey']);
         Config::save('community_store_easypost.testKey',$args['testKey']);
+        Config::save('community_store_easypost.multipleParcels',$args['multipleParcels']);
 
         $this->view();
         $this->set('success',t('Settings Saved'));

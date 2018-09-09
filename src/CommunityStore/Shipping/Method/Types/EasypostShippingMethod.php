@@ -376,20 +376,43 @@ class EasypostShippingMethod extends ShippingMethodTypeMethod
     public function getOffers() {
 
         $totalWeight = number_format(StoreCart::getCartWeight('oz'), 2, '.', '');
+
         $customer = new StoreCustomer();
+
+        $sizeunit = \Config::get('community_store.sizeUnit');
+        $storeweightunit = \Config::get('community_store.weightUnit');
+        $weightmultiplier = 1;
+        $sizemultiplier = 1;
+
+        // convert to inches for gateway
+        if ($sizeunit == 'cm') {
+            $sizemultiplier = 0.39;
+        }
+
+        if ($sizeunit == 'mm') {
+            $sizemultiplier = 0.039;
+        }
+
+        // convert to ounces
+        if ($storeweightunit == 'kg') {
+            $weightmultiplier *= 35.274;
+        }
+
+        if ($storeweightunit =='lb') {
+            $weightmultiplier *= 16;
+        }
 
         $invalid = false;
 
+//        if ($totalWeight <= 0 ) {
+//            if ($this->getFallbackWeight() > 0) {
+//                $totalWeight = $this->getFallbackWeight();
+//            }
+//        }
 
-        if ($totalWeight <= 0 ) {
-            if ($this->getFallbackWeight() > 0) {
-                $totalWeight = $this->getFallbackWeight();
-            }
-        }
-
-        if ($totalWeight <= 0) {
-            $invalid = true;
-        }
+//        if ($totalWeight <= 0) {
+//            $invalid = true;
+//        }
 
         if (!$invalid) {
             try {
@@ -424,63 +447,73 @@ class EasypostShippingMethod extends ShippingMethodTypeMethod
                 );
 
                 $cartitems = StoreCart::getCart();
-                $boxes = array();
+                $seperateboxes = array();
+                $packboxes = array();
+
+                $multipleParcels = \Config::get('community_store_easypost.multipleParcels');
 
                 foreach ($cartitems as $cartitem) {
 
                     for ($i = 0; $i < $cartitem['product']['qty']; $i++) {
                         $product = $cartitem['product']['object'];
 
-                        $boxes[] = array(
-                            'length' => $product->getLength('l'),
-                            'width' => $product->getWidth('w'),
-                            'height' => $product->getHeight('h'));
+                        if ($product->isSeperateShip() && $multipleParcels) {
+                            $seperateboxes += $product->getPackages();
+                        } else {
+                            $packboxes += $product->getPackages();
+                        }
                     }
                 }
 
-                $laff = new LAFFPack();
-                $laff->pack($boxes);
-                $dimensions = $laff->get_container_dimensions();
+                if (!empty($packboxes)) {
+                    $combinedweight = 0;
+                    $laff = new LAFFPack();
 
-                $unit = \Config::get('community_store.sizeUnit');
-                $multiplier = 1;
+                    $boxes = array();
 
-                // convert to inches for gateway
-                if ($unit == 'cm') {
-                    $multiplier = 0.39;
+                    foreach($packboxes as $box) {
+                        $combinedweight += $box->getWeight();
+
+                        $boxes[] = array(
+                            "length" => $box->getLength() ,
+                            "width" => $box->getWidth() ,
+                            "height" => $box->getHeight(),
+                            );
+
+                    }
+
+                    $laff->pack($boxes);
+                    $dimensions = $laff->get_container_dimensions();
+
+                    $parcel_sizes = [
+                        "length" => $dimensions['length'] * $sizemultiplier,
+                        "width" => $dimensions['width'] * $sizemultiplier,
+                        "height" => $dimensions['height'] * $sizemultiplier,
+                        "weight" => $combinedweight * $weightmultiplier];
+
+                    if (!$parcel_sizes['length']) {
+                        $parcel_sizes['length'] = $this->getFallbackLength();
+                    }
+
+                    if (!$parcel_sizes['width']) {
+                        $parcel_sizes['width'] = $this->getFallbackWidth();
+                    }
+
+                    if (!$parcel_sizes['height']) {
+                        $parcel_sizes['height'] = $this->getFallbackHeight();
+                    }
+
                 }
 
-                if ($unit == 'mm') {
-                    $multiplier = 0.039;
-                }
+                $boxesfingerprint = serialize(array_merge($seperateboxes, $packboxes));
 
-                $parcel_sizes = array(
-                    "length" => $dimensions['length'] * $multiplier,
-                    "width" => $dimensions['width'] * $multiplier,
-                    "height" => $dimensions['height'] * $multiplier,
-                    "weight" => $totalWeight);
-
-                if (!$parcel_sizes['length']) {
-                    $parcel_sizes['length'] = $this->getFallbackLength();
-                }
-
-                if (!$parcel_sizes['width']) {
-                    $parcel_sizes['width'] = $this->getFallbackWidth();
-                }
-
-                if (!$parcel_sizes['height']) {
-                    $parcel_sizes['height'] = $this->getFallbackHeight();
-                }
-
-                //print_r($parcel_sizes);
-
-                $shipping_fingerprint_data = array('to' => $to_address_values, 'from' => $from_address_values, 'parcel' => $parcel_sizes, 'lastorderid'=>$lastorderid);
+                $shipping_fingerprint_data = array('to' => $to_address_values, 'from' => $from_address_values, 'parcel' => $boxesfingerprint, 'lastorderid'=>$lastorderid);
                 $shipping_fingerprint = md5(serialize($shipping_fingerprint_data));
 
                 $cache = \Core::make('cache/expensive');
                 $shippingcache = $cache->getItem('cs_easypost/' . $shipping_fingerprint);
 
-                if ($shippingcache->isMiss()) {
+                if ($shippingcache->isMiss() || true) {
                     $shippingcache->lock();
 
                     $to_address = \EasyPost\Address::create(
@@ -490,18 +523,41 @@ class EasypostShippingMethod extends ShippingMethodTypeMethod
                         $from_address_values
                     );
 
+                    $shipments = array();
 
-                    $parcel = \EasyPost\Parcel::create(
-                        $parcel_sizes
-                    );
+                    if (!empty($seperateboxes)) {
+                        foreach($seperateboxes as $seperatebox) {
+                            $shipments[] = [
+                                'parcel'=>[
+                                    "length" => $seperatebox->getLength() * $sizemultiplier,
+                                    "width" => $seperatebox->getWidth() * $sizemultiplier ,
+                                    "height" => $seperatebox->getHeight() * $sizemultiplier ,
+                                    "weight" => $seperatebox->getWeight() * $weightmultiplier
+                                ]
+                            ];
+                        }
 
-                    $shipment = \EasyPost\Shipment::create(
-                        array(
-                            "to_address" => $to_address,
-                            "from_address" => $from_address,
-                            "parcel" => $parcel
-                        )
-                    );
+                        $shipment = \EasyPost\Shipment::create(
+                            [
+                                "to_address" => $to_address,
+                                "from_address" => $from_address,
+                                "shipments" => $shipments
+                            ]
+                        );
+                    } else {
+                        $parcel = \EasyPost\Parcel::create(
+                            $parcel_sizes
+                        );
+
+                        $shipment = \EasyPost\Shipment::create(
+                            [
+                                "to_address" => $to_address,
+                                "from_address" => $from_address,
+                                "parcel" => $parcel
+                            ]
+                        );
+                    }
+
 
                     if (version_compare(\Config::get('concrete.version'), '8.0', '>=')) {
                         $shippingcache->set($shipment)->expiresAfter(60 * 60)->save(); // expire after 1 hour
@@ -513,7 +569,7 @@ class EasypostShippingMethod extends ShippingMethodTypeMethod
                     $shipment = $shippingcache->get();
                 }
             } catch(\EasyPost\Error $e) {
-                //$e->prettyPrint();
+                $e->prettyPrint();
                 $invalid = true;
             }
 
