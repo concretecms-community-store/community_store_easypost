@@ -23,6 +23,14 @@
         <?= $form->select('multipleParcels', array('0'=>t('No'),'1'=>t('Yes')),$mode); ?>
     </div>
 
+    <div class="form-group">
+        <?= $form->label('adjustmentFactor',t("Price Adjustment Factor")); ?>
+        <div class="input-group">
+        <?= $form->text('adjustmentFactor',$adjustmentFactor); ?>
+        <div class="input-group-addon">%</div>
+        </div>
+    </div>
+
     <div class="ccm-dashboard-form-actions-wrapper">
         <div class="ccm-dashboard-form-actions">
             <button class="pull-right btn btn-success" type="submit" ><?= t('Save Settings')?></button>

@@ -513,7 +513,7 @@ class EasypostShippingMethod extends ShippingMethodTypeMethod
                 $cache = \Core::make('cache/expensive');
                 $shippingcache = $cache->getItem('cs_easypost/' . $shipping_fingerprint);
 
-                if ($shippingcache->isMiss() || true) {
+                if ($shippingcache->isMiss()) {
                     $shippingcache->lock();
 
                     $to_address = \EasyPost\Address::create(
@@ -569,20 +569,28 @@ class EasypostShippingMethod extends ShippingMethodTypeMethod
                     $shipment = $shippingcache->get();
                 }
             } catch(\EasyPost\Error $e) {
-                $e->prettyPrint();
+                //$e->prettyPrint();
                 $invalid = true;
             }
-
         }
         
         $offers = array();
+
+        $adjustmentFactor = Config::get('community_store_easypost.adjustmentFactor');
+
+        if (!$adjustmentFactor) {
+            $adjustmentFactor = 1;
+        } else {
+            $adjustmentFactor = $adjustmentFactor / 100;
+        }
 
         if (!$invalid && $shipment && $shipment->rates && count($shipment->rates) > 0) {
             foreach ($shipment->rates as $rate) {
                 $offer = new StoreShippingMethodOffer();
 
                 // then set the rate
-                $offer->setRate($rate->rate);
+
+                $offer->setRate($rate->rate * $adjustmentFactor);
 
                 // then set a label for it
                 $offer->setOfferLabel($rate->carrier . ' - ' . $rate->service);
