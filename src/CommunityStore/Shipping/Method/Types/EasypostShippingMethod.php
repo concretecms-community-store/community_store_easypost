@@ -104,6 +104,16 @@ class EasypostShippingMethod extends ShippingMethodTypeMethod
      */
     protected $noMatchRate;
 
+    /**
+     * @Column(type="text",nullable=true)
+     */
+    protected $carrierFilter;
+
+    /**
+     * @Column(type="text",nullable=true)
+     */
+    protected $serviceFilter;
+
 
     public function getKey() {
         $mode = Config::get('community_store_easypost.mode');
@@ -291,6 +301,25 @@ class EasypostShippingMethod extends ShippingMethodTypeMethod
         $this->noMatchRate = $noMatchRate;
     }
 
+    public function getCarrierFilter()
+    {
+        return $this->carrierFilter;
+    }
+
+    public function setCarrierFilter($carrierFilter)
+    {
+        $this->carrierFilter = $carrierFilter;
+    }
+
+    public function getServiceFilter()
+    {
+        return $this->serviceFilter;
+    }
+
+    public function setServiceFilter($serviceFilter)
+    {
+        $this->serviceFilter = $serviceFilter;
+    }
 
     public function addMethodTypeMethod($data)
     {
@@ -334,6 +363,8 @@ class EasypostShippingMethod extends ShippingMethodTypeMethod
         $sm->setFallbackWidth((int)$data['fallbackWidth']);
         $sm->setFallbackLength((int)$data['fallbackLength']);
         $sm->setFallbackWeight((int)$data['fallbackWeight']);
+        $sm->setCarrierFilter(trim($data['carrierFilter']));
+        $sm->setServiceFilter(trim($data['serviceFilter']));
 
         $em = \ORM::entityManager();
         $em->persist($sm);
@@ -492,15 +523,19 @@ class EasypostShippingMethod extends ShippingMethodTypeMethod
                         "weight" => $combinedweight * $weightmultiplier];
 
                     if (!$parcel_sizes['length']) {
-                        $parcel_sizes['length'] = $this->getFallbackLength();
+                        $parcel_sizes['length'] = $this->getFallbackLength() * $sizemultiplier;
                     }
 
                     if (!$parcel_sizes['width']) {
-                        $parcel_sizes['width'] = $this->getFallbackWidth();
+                        $parcel_sizes['width'] = $this->getFallbackWidth() * $sizemultiplier;
                     }
 
                     if (!$parcel_sizes['height']) {
-                        $parcel_sizes['height'] = $this->getFallbackHeight();
+                        $parcel_sizes['height'] = $this->getFallbackHeight() * $sizemultiplier;
+                    }
+
+                    if (!$parcel_sizes['weight']) {
+                        $parcel_sizes['weight'] = $this->getFallbackWeight() * $weightmultiplier;
                     }
 
                 }
@@ -537,7 +572,7 @@ class EasypostShippingMethod extends ShippingMethodTypeMethod
                             ];
                         }
 
-                        $shipment = \EasyPost\Shipment::create(
+                        $shipment = \EasyPost\Order::create(
                             [
                                 "to_address" => $to_address,
                                 "from_address" => $from_address,
@@ -584,26 +619,37 @@ class EasypostShippingMethod extends ShippingMethodTypeMethod
             $adjustmentFactor = $adjustmentFactor / 100;
         }
 
+        $carrierFilter = trim($this->carrierFilter);
+        $serviceFilter = trim($this->serviceFilter);
+
+        $carrierFilter = explode("\n", $carrierFilter);
+        $serviceFilter = explode("\n", $serviceFilter);
+
         if (!$invalid && $shipment && $shipment->rates && count($shipment->rates) > 0) {
             foreach ($shipment->rates as $rate) {
-                $offer = new StoreShippingMethodOffer();
 
-                // then set the rate
+                if (!$this->carrierFilter|| in_array($rate->carrier, $carrierFilter)) {
+                    if (!$this->serviceFilter || in_array($rate->service, $serviceFilter)) {
+                        $offer = new StoreShippingMethodOffer();
 
-                $offer->setRate($rate->rate * $adjustmentFactor);
+                        // then set the rate
 
-                // then set a label for it
-                $offer->setOfferLabel($rate->carrier . ' - ' . $rate->service);
+                        $offer->setRate($rate->rate * $adjustmentFactor);
 
-                if ($rate->delivery_days > 0) {
-                    $offer->setOfferDetails(t('Estimated Delivery: %s days', $rate->delivery_days));
+                        // then set a label for it
+                        $offer->setOfferLabel($rate->carrier . ' - ' . $rate->service);
+
+                        if ($rate->delivery_days > 0) {
+                            $offer->setOfferDetails(t('Estimated Delivery: %s days', $rate->delivery_days));
+                        }
+
+                        $offer->setShipmentID($shipment->id);
+                        $offer->setRateID($rate->id);
+
+                        // add it to the array
+                        $offers[] = $offer;
+                    }
                 }
-
-                $offer->setShipmentID($shipment->id);
-                $offer->setRateID($rate->id);
-
-                // add it to the array
-                $offers[] = $offer;
             }
         } elseif($this->getNoMatch()) {
             $offer = new StoreShippingMethodOffer();

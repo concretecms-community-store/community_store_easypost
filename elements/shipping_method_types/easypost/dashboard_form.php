@@ -129,6 +129,19 @@ extract($vars); ?>
                 <?php } ?>
             </select>
         </div>
+
+        <h3><?= t('Carrier Restriction');?></h3>
+        <div class="form-group">
+            <?= $form->textarea('carrierFilter',$smtm->getCarrierFilter()); ?>
+            <span class="help-block"><?= t('Enter carrier names to restrict to, one on each line');?></span>
+        </div>
+
+        <h3><?= t('Service Restriction');?></h3>
+        <div class="form-group">
+            <?= $form->textarea('serviceFilter',$smtm->getServiceFilter()); ?>
+            <span class="help-block"><?= t('Enter service names to restrict to, one on each line');?></span>
+        </div>
+
     </div>
 
 </div>
