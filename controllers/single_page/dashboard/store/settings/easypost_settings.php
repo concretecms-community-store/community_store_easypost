@@ -15,13 +15,11 @@ class EasypostSettings extends DashboardPageController {
         $liveKey = Config::get('community_store_easypost.liveKey');
         $testKey = Config::get('community_store_easypost.testKey');
         $multipleParcels = Config::get('community_store_easypost.multipleParcels');
-        $adjustmentFactor = Config::get('community_store_easypost.adjustmentFactor');
 
         $this->set('mode', $mode);
         $this->set('liveKey', $liveKey);
         $this->set('testKey', $testKey);
         $this->set('multipleParcels', $multipleParcels);
-        $this->set('adjustmentFactor', $adjustmentFactor);
     }
 
     public function save() {

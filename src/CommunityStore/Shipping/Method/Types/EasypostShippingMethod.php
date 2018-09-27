@@ -114,6 +114,11 @@ class EasypostShippingMethod extends ShippingMethodTypeMethod
      */
     protected $serviceFilter;
 
+    /**
+     * @Column(type="float",nullable=true)
+     */
+    protected $adjustmentFactor;
+
 
     public function getKey() {
         $mode = Config::get('community_store_easypost.mode');
@@ -321,6 +326,16 @@ class EasypostShippingMethod extends ShippingMethodTypeMethod
         $this->serviceFilter = $serviceFilter;
     }
 
+    public function getAdjustmentFactor()
+    {
+        return $this->adjustmentFactor;
+    }
+
+    public function setAdjustmentFactor($adjustmentFactor)
+    {
+        $this->adjustmentFactor = $adjustmentFactor;
+    }
+
     public function addMethodTypeMethod($data)
     {
         return $this->addOrUpdate('add', $data);
@@ -365,6 +380,7 @@ class EasypostShippingMethod extends ShippingMethodTypeMethod
         $sm->setFallbackWeight((int)$data['fallbackWeight']);
         $sm->setCarrierFilter(trim($data['carrierFilter']));
         $sm->setServiceFilter(trim($data['serviceFilter']));
+        $sm->setAdjustmentFactor(trim($data['adjustmentFactor']));
 
         $em = \ORM::entityManager();
         $em->persist($sm);
@@ -509,7 +525,7 @@ class EasypostShippingMethod extends ShippingMethodTypeMethod
                             "length" => $box->getLength() ,
                             "width" => $box->getWidth() ,
                             "height" => $box->getHeight(),
-                            );
+                        );
 
                     }
 
@@ -572,6 +588,13 @@ class EasypostShippingMethod extends ShippingMethodTypeMethod
                             ];
                         }
 
+                        // add extra box of combined items if necessary
+                        if (isset($parcel_sizes)) {
+                            $shipments[] = [
+                                'parcel'=>$parcel_sizes
+                            ];
+                        }
+
                         $shipment = \EasyPost\Order::create(
                             [
                                 "to_address" => $to_address,
@@ -579,6 +602,7 @@ class EasypostShippingMethod extends ShippingMethodTypeMethod
                                 "shipments" => $shipments
                             ]
                         );
+
                     } else {
                         $parcel = \EasyPost\Parcel::create(
                             $parcel_sizes
@@ -608,15 +632,15 @@ class EasypostShippingMethod extends ShippingMethodTypeMethod
                 $invalid = true;
             }
         }
-        
+
         $offers = array();
 
-        $adjustmentFactor = Config::get('community_store_easypost.adjustmentFactor');
+        $adjustmentFactor = $this->getAdjustmentFactor();
 
         if (!$adjustmentFactor) {
             $adjustmentFactor = 1;
         } else {
-            $adjustmentFactor = $adjustmentFactor / 100;
+            $adjustmentFactor = 1 +  ($adjustmentFactor / 100);
         }
 
         $carrierFilter = trim($this->carrierFilter);

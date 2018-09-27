@@ -13,7 +13,7 @@ class Controller extends Package
 {
     protected $pkgHandle = 'community_store_easypost';
     protected $appVersionRequired = '5.7.2';
-    protected $pkgVersion = '0.9.7';
+    protected $pkgVersion = '0.9.8';
 
     public function on_start()
     {

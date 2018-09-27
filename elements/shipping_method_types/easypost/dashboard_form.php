@@ -142,6 +142,15 @@ extract($vars); ?>
             <span class="help-block"><?= t('Enter service names to restrict to, one on each line');?></span>
         </div>
 
+        <h3><?= t('Price Adjustment Factor');?></h3>
+        <div class="form-group">
+            <?= $form->label('adjustmentFactor',t("Price Adjustment Factor")); ?>
+            <div class="input-group">
+                <?= $form->text('adjustmentFactor',$smtm->getAdjustmentFactor()); ?>
+                <div class="input-group-addon">%</div>
+            </div>
+        </div>
+
     </div>
 
 </div>
