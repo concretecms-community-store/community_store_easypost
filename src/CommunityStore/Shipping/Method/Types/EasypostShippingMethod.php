@@ -505,9 +505,9 @@ class EasypostShippingMethod extends ShippingMethodTypeMethod
                         $product = $cartitem['product']['object'];
 
                         if ($product->isSeperateShip() && $multipleParcels) {
-                            $seperateboxes += $product->getPackages();
+                            $seperateboxes  = array_merge($seperateboxes, $product->getPackages());
                         } else {
-                            $packboxes += $product->getPackages();
+                            $packboxes = array_merge($packboxes,$product->getPackages());
                         }
                     }
                 }
