@@ -119,6 +119,11 @@ class EasypostShippingMethod extends ShippingMethodTypeMethod
      */
     protected $adjustmentFactor;
 
+    /**
+     * @Column(type="text",nullable=true)
+     */
+    protected $rateType;
+
 
     public function getKey() {
         $mode = Config::get('community_store_easypost.mode');
@@ -336,6 +341,16 @@ class EasypostShippingMethod extends ShippingMethodTypeMethod
         $this->adjustmentFactor = $adjustmentFactor;
     }
 
+    public function getRateType()
+    {
+        return $this->rateType;
+    }
+
+    public function setRateType($rateType)
+    {
+        $this->rateType = $rateType;
+    }
+
     public function addMethodTypeMethod($data)
     {
         return $this->addOrUpdate('add', $data);
@@ -381,6 +396,7 @@ class EasypostShippingMethod extends ShippingMethodTypeMethod
         $sm->setCarrierFilter(trim($data['carrierFilter']));
         $sm->setServiceFilter(trim($data['serviceFilter']));
         $sm->setAdjustmentFactor(trim($data['adjustmentFactor']));
+        $sm->setRateType(trim($data['rateType']));
 
         $em = \ORM::entityManager();
         $em->persist($sm);
@@ -422,7 +438,7 @@ class EasypostShippingMethod extends ShippingMethodTypeMethod
 
     public function getOffers() {
 
-        $totalWeight = number_format(StoreCart::getCartWeight('oz'), 2, '.', '');
+        //$totalWeight = number_format(StoreCart::getCartWeight('oz'), 2, '.', '');
 
         $customer = new StoreCustomer();
 
@@ -507,7 +523,7 @@ class EasypostShippingMethod extends ShippingMethodTypeMethod
                         if ($product->isSeperateShip() && $multipleParcels) {
                             $seperateboxes  = array_merge($seperateboxes, $product->getPackages());
                         } else {
-                            $packboxes = array_merge($packboxes,$product->getPackages());
+                            $packboxes = array_merge($packboxes, $product->getPackages());
                         }
                     }
                 }
@@ -619,9 +635,9 @@ class EasypostShippingMethod extends ShippingMethodTypeMethod
 
 
                     if (version_compare(\Config::get('concrete.version'), '8.0', '>=')) {
-                        $shippingcache->set($shipment)->expiresAfter(60 * 60)->save(); // expire after 1 hour
+                        $shippingcache->set($shipment)->expiresAfter(60 * 5)->save(); // expire after 5 minutes
                     } else {
-                        $shippingcache->set($shipment, 60 * 60); // expire after an hour
+                        $shippingcache->set($shipment, 60 * 5); // expire after 5 minutes
                     }
 
                 } else {
@@ -640,7 +656,7 @@ class EasypostShippingMethod extends ShippingMethodTypeMethod
         if (!$adjustmentFactor) {
             $adjustmentFactor = 1;
         } else {
-            $adjustmentFactor = 1 +  ($adjustmentFactor / 100);
+            $adjustmentFactor = 1 + ($adjustmentFactor / 100);
         }
 
         $carrierFilter = trim($this->carrierFilter);
@@ -648,6 +664,13 @@ class EasypostShippingMethod extends ShippingMethodTypeMethod
 
         $carrierFilter = explode("\n", $carrierFilter);
         $serviceFilter = explode("\n", $serviceFilter);
+
+        $rateType = $this->getRateType();
+
+        if (!$rateType) {
+            $rateType = 'rate';
+        }
+
 
         if (!$invalid && $shipment && $shipment->rates && count($shipment->rates) > 0) {
             foreach ($shipment->rates as $rate) {
@@ -657,8 +680,7 @@ class EasypostShippingMethod extends ShippingMethodTypeMethod
                         $offer = new StoreShippingMethodOffer();
 
                         // then set the rate
-
-                        $offer->setRate($rate->rate * $adjustmentFactor);
+                        $offer->setRate($rate->$rateType * $adjustmentFactor);
 
                         // then set a label for it
                         $offer->setOfferLabel($rate->carrier . ' - ' . $rate->service);

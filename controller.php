@@ -1,5 +1,4 @@
 <?php
-
 namespace Concrete\Package\CommunityStoreEasypost;
 
 use Package;
@@ -7,13 +6,11 @@ use SinglePage;
 use Whoops\Exception\ErrorException;
 use Concrete\Package\CommunityStore\Src\CommunityStore\Shipping\Method\ShippingMethodType as StoreShippingMethodType;
 
-defined('C5_EXECUTE') or die(_("Access Denied."));
-
 class Controller extends Package
 {
     protected $pkgHandle = 'community_store_easypost';
     protected $appVersionRequired = '5.7.2';
-    protected $pkgVersion = '0.9.8';
+    protected $pkgVersion = '0.9.9';
 
     public function on_start()
     {

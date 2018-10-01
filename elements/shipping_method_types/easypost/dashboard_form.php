@@ -5,7 +5,7 @@ extract($vars); ?>
 
 <div class="row">
     <div class="col-md-4">
-        <h3><?= t('From Address (required)'); ?></h3>
+        <h4><?= t('From Address (required)'); ?></h4>
 
 
         <div class="form-group">
@@ -54,7 +54,7 @@ extract($vars); ?>
 
     <div class="col-md-4">
 
-        <h3><?= t('Fallback Size/Weights'); ?></h3>
+        <h4><?= t('Fallback Size/Weights'); ?></h4>
         <p><?= t('If cart weight or size(s) are zero, assume the following values'); ?></p>
         <div class="form-group">
             <?= $form->label('fallbackWeight',t("Fallback Weight")); ?>
@@ -67,8 +67,8 @@ extract($vars); ?>
         <div class="form-group">
             <?= $form->label('fallbackWidth',t("Fallback Width")); ?>
             <div class="input-group">
-            <?= $form->text('fallbackWidth',$smtm->getFallbackWidth()); ?>
-            <div class="input-group-addon">in</div>
+                <?= $form->text('fallbackWidth',$smtm->getFallbackWidth()); ?>
+                <div class="input-group-addon">in</div>
             </div>
         </div>
 
@@ -88,12 +88,12 @@ extract($vars); ?>
             </div>
         </div>
 
-        <h3><?= t('No rate fallback'); ?></h3>
+        <h4><?= t('No rate fallback'); ?></h4>
 
         <p><label>
                 <?= $form->checkbox('noMatch','1', $smtm->getNoMatch(), array('id'=>'noMatch')); ?>
                 <?= t('Offer fallback option when no offers');?>
-        </label></p>
+            </label></p>
 
         <div id="nomatchfields" style="<?= ($smtm->getNoMatch() ? '' : 'display: none;') ;?>">
             <div class="form-group">
@@ -119,7 +119,7 @@ extract($vars); ?>
 
     </div>
     <div class="col-md-4">
-        <h3><?= t('Country Restriction');?></h3>
+        <h4><?= t('Country Restriction');?></h4>
         <div class="form-group">
             <?= $form->label('countriesSelected',t("Apply to selected countries only")); ?>
             <select class="form-control" style="height: 300px" multiple name="countriesSelected[]">
@@ -130,25 +130,29 @@ extract($vars); ?>
             </select>
         </div>
 
-        <h3><?= t('Carrier Restriction');?></h3>
         <div class="form-group">
+            <?= $form->label('carrierFilter',t("Carrier Restriction")); ?>
             <?= $form->textarea('carrierFilter',$smtm->getCarrierFilter()); ?>
             <span class="help-block"><?= t('Enter carrier names to restrict to, one on each line');?></span>
         </div>
 
-        <h3><?= t('Service Restriction');?></h3>
         <div class="form-group">
+            <?= $form->label('serviceFilter',t("Service Restriction")); ?>
             <?= $form->textarea('serviceFilter',$smtm->getServiceFilter()); ?>
             <span class="help-block"><?= t('Enter service names to restrict to, one on each line');?></span>
         </div>
 
-        <h3><?= t('Price Adjustment Factor');?></h3>
         <div class="form-group">
             <?= $form->label('adjustmentFactor',t("Price Adjustment Factor")); ?>
             <div class="input-group">
                 <?= $form->text('adjustmentFactor',$smtm->getAdjustmentFactor()); ?>
                 <div class="input-group-addon">%</div>
             </div>
+        </div>
+
+        <div class="form-group">
+            <?= $form->label('rateType',t("Rate Type")); ?>
+            <?= $form->select('rateType', array('rate'=>t('Actual Rate'),'retail_rate'=>t('Retail Rate'),'list_rate'=>t('List Rate')), $smtm->getRateType()); ?>
         </div>
 
     </div>
