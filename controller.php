@@ -9,8 +9,8 @@ use Concrete\Package\CommunityStore\Src\CommunityStore\Shipping\Method\ShippingM
 class Controller extends Package
 {
     protected $pkgHandle = 'community_store_easypost';
-    protected $appVersionRequired = '5.7.2';
-    protected $pkgVersion = '0.9.9';
+    protected $appVersionRequired = '8.0';
+    protected $pkgVersion = '2.0';
 
     public function on_start()
     {

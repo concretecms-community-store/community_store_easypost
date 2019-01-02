@@ -10,8 +10,8 @@ use Concrete\Package\CommunityStore\Src\CommunityStore\Customer\Customer as Stor
 use Concrete\Package\CommunityStore\Src\CommunityStore\Shipping\Method\ShippingMethodOffer as StoreShippingMethodOffer;
 
 /**
- * @Entity
- * @Table(name="CommunityStoreEasypostMethods")
+ * @ORM\Entity
+ * @ORM\Table(name="CommunityStoreEasypostMethods")
  */
 class EasypostShippingMethod extends ShippingMethodTypeMethod
 {
@@ -20,107 +20,107 @@ class EasypostShippingMethod extends ShippingMethodTypeMethod
     }
 
     /**
-     * @Column(type="string",nullable=true)
+     * @ORM\Column(type="string",nullable=true)
      */
     protected $company;
 
     /**
-     * @Column(type="string",nullable=true)
+     * @ORM\Column(type="string",nullable=true)
      */
     protected $street1;
 
     /**
-     * @Column(type="string",nullable=true)
+     * @ORM\Column(type="string",nullable=true)
      */
     protected $street2;
 
     /**
-     * @Column(type="string",nullable=true)
+     * @ORM\Column(type="string",nullable=true)
      */
     protected $city;
 
     /**
-     * @Column(type="string",nullable=true)
+     * @ORM\Column(type="string",nullable=true)
      */
     protected $state;
 
     /**
-     * @Column(type="string",nullable=true)
+     * @ORM\Column(type="string",nullable=true)
      */
     protected $country;
 
     /**
-     * @Column(type="string",nullable=true)
+     * @ORM\Column(type="string",nullable=true)
      */
     protected $zip;
 
     /**
-     * @Column(type="string",nullable=true)
+     * @ORM\Column(type="string",nullable=true)
      */
     protected $phone;
 
     /**
-     * @Column(type="text",nullable=true)
+     * @ORM\Column(type="text",nullable=true)
      */
     protected $countriesSelected;
 
     /**
-     * @Column(type="float",nullable=true)
+     * @ORM\Column(type="float",nullable=true)
      */
     protected $fallbackWeight;
 
     /**
-     * @Column(type="float",nullable=true)
+     * @ORM\Column(type="float",nullable=true)
      */
     protected $fallbackWidth;
 
     /**
-     * @Column(type="float",nullable=true)
+     * @ORM\Column(type="float",nullable=true)
      */
     protected $fallbackLength;
 
     /**
-     * @Column(type="float",nullable=true)
+     * @ORM\Column(type="float",nullable=true)
      */
     protected $fallbackHeight;
 
     /**
-     * @Column(type="boolean",nullable=true)
+     * @ORM\Column(type="boolean",nullable=true)
      */
     protected $noMatch;
 
     /**
-     * @Column(type="text",nullable=true)
+     * @ORM\Column(type="text",nullable=true)
      */
     protected $noMatchLabel;
 
     /**
-     * @Column(type="text",nullable=true)
+     * @ORM\Column(type="text",nullable=true)
      */
     protected $noMatchDetails;
 
     /**
-     * @Column(type="float")
+     * @ORM\Column(type="float")
      */
     protected $noMatchRate;
 
     /**
-     * @Column(type="text",nullable=true)
+     * @ORM\Column(type="text",nullable=true)
      */
     protected $carrierFilter;
 
     /**
-     * @Column(type="text",nullable=true)
+     * @ORM\Column(type="text",nullable=true)
      */
     protected $serviceFilter;
 
     /**
-     * @Column(type="float",nullable=true)
+     * @ORM\Column(type="float",nullable=true)
      */
     protected $adjustmentFactor;
 
     /**
-     * @Column(type="text",nullable=true)
+     * @ORM\Column(type="text",nullable=true)
      */
     protected $rateType;
 
@@ -716,12 +716,12 @@ class EasypostShippingMethod extends ShippingMethodTypeMethod
 /**
  * Largest Area Fit First (LAFF) 3D box packing algorithm class
  *
- * @author Maarten de Boer <info@maartendeboer.net>
- * @copyright Maarten de Boer 2012
- * @version 1.0
+ * @ORM\author Maarten de Boer <info@ORM\maartendeboer.net>
+ * @ORM\copyright Maarten de Boer 2012
+ * @ORM\version 1.0
  *
  * Also see this PDF document for an explanation about the LAFF algorithm:
- * @link http://www.zahidgurbuz.com/yayinlar/An%20Efficient%20Algorithm%20for%203D%20Rectangular%20Box%20Packing.pdf
+ * @ORM\link http://www.zahidgurbuz.com/yayinlar/An%20Efficient%20Algorithm%20for%203D%20Rectangular%20Box%20Packing.pdf
  *
  * Copyright (C) 2012 Maarten de Boer
  *
@@ -733,23 +733,23 @@ class EasypostShippingMethod extends ShippingMethodTypeMethod
  */
 class LAFFPack {
 
-    /** @var array $boxes Array of boxes to pack */
+    /** @ORM\var array $boxes Array of boxes to pack */
     private $boxes = null;
 
-    /** @var array $packed_boxes Array of boxes that have been packed */
+    /** @ORM\var array $packed_boxes Array of boxes that have been packed */
     private $packed_boxes = null;
 
-    /** @var int $level Current level we're packing (0 based) */
+    /** @ORM\var int $level Current level we're packing (0 based) */
     private $level = -1;
 
-    /** @var array $container_dimensions Current container dimensions */
+    /** @ORM\var array $container_dimensions Current container dimensions */
     private $container_dimensions = null;
 
     /**
      * Constructor of the BoxPacking class
      *
-     * @access public
-     * @param array $boxes Array of boxes to pack
+     * @ORM\access public
+     * @ORM\param array $boxes Array of boxes to pack
      */
     function __construct($boxes = null, $container = null)
     {
@@ -784,10 +784,10 @@ class LAFFPack {
     /**
      * Start packing boxes
      *
-     * @access public
-     * @param array $boxes
-     * @param array $container Set fixed container dimensions
-     * @returns void
+     * @ORM\access public
+     * @ORM\param array $boxes
+     * @ORM\param array $container Set fixed container dimensions
+     * @ORM\returns void
      */
     function pack($boxes = null, $container = null) {
         if(isset($boxes) && is_array($boxes)) {
@@ -823,8 +823,8 @@ class LAFFPack {
     /**
      * Get remaining boxes to pack
      *
-     * @access public
-     * @returns array
+     * @ORM\access public
+     * @ORM\returns array
      */
     function get_remaining_boxes() {
         return $this->boxes;
@@ -833,8 +833,8 @@ class LAFFPack {
     /**
      * Get packed boxes
      *
-     * @access public
-     * @returns array
+     * @ORM\access public
+     * @ORM\returns array
      */
     function get_packed_boxes() {
         return $this->packed_boxes;
@@ -843,8 +843,8 @@ class LAFFPack {
     /**
      * Get container dimensions
      *
-     * @access public
-     * @returns array
+     * @ORM\access public
+     * @ORM\returns array
      */
     function get_container_dimensions() {
         return $this->container_dimensions;
@@ -853,8 +853,8 @@ class LAFFPack {
     /**
      * Get container volume
      *
-     * @access public
-     * @returns float
+     * @ORM\access public
+     * @ORM\returns float
      */
     function get_container_volume() {
         if(!isset($this->container_dimensions)) {
@@ -867,8 +867,8 @@ class LAFFPack {
     /**
      * Get number of levels
      *
-     * @access public
-     * @returns int
+     * @ORM\access public
+     * @ORM\returns int
      */
     function get_levels() {
         return $this->level + 1;
@@ -877,8 +877,8 @@ class LAFFPack {
     /**
      * Get total volume of packed boxes
      *
-     * @access public
-     * @returns float
+     * @ORM\access public
+     * @ORM\returns float
      */
     function get_packed_volume() {
         if(!isset($this->packed_boxes)) {
@@ -899,8 +899,8 @@ class LAFFPack {
     /**
      * Get number of levels
      *
-     * @access public
-     * @returns int
+     * @ORM\access public
+     * @ORM\returns int
      */
     function get_remaining_volume() {
         if(!isset($this->packed_boxes)) {
@@ -919,9 +919,9 @@ class LAFFPack {
     /**
      * Get dimensions of specified level
      *
-     * @access public
-     * @param int $level
-     * @returns array
+     * @ORM\access public
+     * @ORM\param int $level
+     * @ORM\returns array
      */
     function get_level_dimensions($level = 0) {
         if($level < 0 || $level > $this->level || !array_key_exists($level, $this->packed_boxes)) {
@@ -948,9 +948,9 @@ class LAFFPack {
     /**
      * Get longest edge from boxes
      *
-     * @access public
-     * @param array $edges Edges to select the longest from
-     * @returns array
+     * @ORM\access public
+     * @ORM\param array $edges Edges to select the longest from
+     * @ORM\returns array
      */
     function _calc_longest_edge($boxes, $edges = array('length', 'width', 'height')) {
         if(!isset($boxes) || !is_array($boxes)) {
@@ -980,8 +980,8 @@ class LAFFPack {
     /**
      * Calculate container dimensions
      *
-     * @access public
-     * @returns array
+     * @ORM\access public
+     * @ORM\returns array
      */
     function _calc_container_dimensions() {
         if(!isset($this->boxes)){
@@ -1013,11 +1013,11 @@ class LAFFPack {
     /**
      * Utility function to swap two elements in an array
      *
-     * @access public
-     * @param array $array
-     * @param mixed $el1 Index of item to be swapped
-     * @param mixed $el2 Index of item to swap with
-     * @returns array
+     * @ORM\access public
+     * @ORM\param array $array
+     * @ORM\param mixed $el1 Index of item to be swapped
+     * @ORM\param mixed $el2 Index of item to swap with
+     * @ORM\returns array
      */
     function _swap($array, $el1, $el2) {
         if(!array_key_exists($el1, $array) || !array_key_exists($el2, $array)) {
@@ -1034,9 +1034,9 @@ class LAFFPack {
     /**
      * Utility function that returns the total volume of a box / container
      *
-     * @access public
-     * @param array $box
-     * @returns float
+     * @ORM\access public
+     * @ORM\param array $box
+     * @ORM\returns float
      */
     function _get_volume($box)  {
         if(!is_array($box) || count(array_keys($box)) < 3) {
@@ -1051,10 +1051,10 @@ class LAFFPack {
     /**
      * Check if box fits in specified space
      *
-     * @access private
-     * @param array $box Box to fit in space
-     * @param array $space Space to fit box in
-     * @returns bool
+     * @ORM\access private
+     * @ORM\param array $box Box to fit in space
+     * @ORM\param array $space Space to fit box in
+     * @ORM\returns bool
      */
     private function _try_fit_box($box, $space)  {
         if(count($box) < 3) {
@@ -1080,10 +1080,10 @@ class LAFFPack {
      * Check if box fits in specified space
      * and rotate (3d) if necessary
      *
-     * @access public
-     * @param array $box Box to fit in space
-     * @param array $space Space to fit box in
-     * @returns bool
+     * @ORM\access public
+     * @ORM\param array $box Box to fit in space
+     * @ORM\param array $space Space to fit box in
+     * @ORM\returns bool
      */
     function _box_fits($box, $space) {
         $box = array_values($box);
@@ -1116,8 +1116,8 @@ class LAFFPack {
     /**
      * Start a new packing level
      *
-     * @access private
-     * @returns void
+     * @ORM\access private
+     * @ORM\returns void
      */
     private function pack_level() {
         $biggest_box_index = null;
@@ -1194,8 +1194,8 @@ class LAFFPack {
     /**
      * Fills space with boxes recursively
      *
-     * @access private
-     * @returns void
+     * @ORM\access private
+     * @ORM\returns void
      */
     private function _fill_space($space) {
 
