@@ -717,12 +717,12 @@ class EasypostShippingMethod extends ShippingMethodTypeMethod
 /**
  * Largest Area Fit First (LAFF) 3D box packing algorithm class
  *
- * @ORM\author Maarten de Boer <info@ORM\maartendeboer.net>
- * @ORM\copyright Maarten de Boer 2012
- * @ORM\version 1.0
+ * @author Maarten de Boer <info@ORM\maartendeboer.net>
+ * @copyright Maarten de Boer 2012
+ * @version 1.0
  *
  * Also see this PDF document for an explanation about the LAFF algorithm:
- * @ORM\link http://www.zahidgurbuz.com/yayinlar/An%20Efficient%20Algorithm%20for%203D%20Rectangular%20Box%20Packing.pdf
+ * @link http://www.zahidgurbuz.com/yayinlar/An%20Efficient%20Algorithm%20for%203D%20Rectangular%20Box%20Packing.pdf
  *
  * Copyright (C) 2012 Maarten de Boer
  *
@@ -734,23 +734,23 @@ class EasypostShippingMethod extends ShippingMethodTypeMethod
  */
 class LAFFPack {
 
-    /** @ORM\var array $boxes Array of boxes to pack */
+    /** @var array $boxes Array of boxes to pack */
     private $boxes = null;
 
-    /** @ORM\var array $packed_boxes Array of boxes that have been packed */
+    /** @var array $packed_boxes Array of boxes that have been packed */
     private $packed_boxes = null;
 
-    /** @ORM\var int $level Current level we're packing (0 based) */
+    /** @var int $level Current level we're packing (0 based) */
     private $level = -1;
 
-    /** @ORM\var array $container_dimensions Current container dimensions */
+    /** @var array $container_dimensions Current container dimensions */
     private $container_dimensions = null;
 
     /**
      * Constructor of the BoxPacking class
      *
-     * @ORM\access public
-     * @ORM\param array $boxes Array of boxes to pack
+    access public
+    param array $boxes Array of boxes to pack
      */
     function __construct($boxes = null, $container = null)
     {
@@ -785,10 +785,10 @@ class LAFFPack {
     /**
      * Start packing boxes
      *
-     * @ORM\access public
-     * @ORM\param array $boxes
-     * @ORM\param array $container Set fixed container dimensions
-     * @ORM\returns void
+     * @access public
+     * @param array $boxes
+     * @param array $container Set fixed container dimensions
+     * @returns void
      */
     function pack($boxes = null, $container = null) {
         if(isset($boxes) && is_array($boxes)) {
@@ -824,8 +824,8 @@ class LAFFPack {
     /**
      * Get remaining boxes to pack
      *
-     * @ORM\access public
-     * @ORM\returns array
+     * @access public
+     * @returns array
      */
     function get_remaining_boxes() {
         return $this->boxes;
@@ -834,8 +834,8 @@ class LAFFPack {
     /**
      * Get packed boxes
      *
-     * @ORM\access public
-     * @ORM\returns array
+     * @access public
+     * @returns array
      */
     function get_packed_boxes() {
         return $this->packed_boxes;
@@ -844,8 +844,8 @@ class LAFFPack {
     /**
      * Get container dimensions
      *
-     * @ORM\access public
-     * @ORM\returns array
+     * @access public
+     * @returns array
      */
     function get_container_dimensions() {
         return $this->container_dimensions;
@@ -854,8 +854,8 @@ class LAFFPack {
     /**
      * Get container volume
      *
-     * @ORM\access public
-     * @ORM\returns float
+     * @access public
+     * @returns float
      */
     function get_container_volume() {
         if(!isset($this->container_dimensions)) {
@@ -868,8 +868,8 @@ class LAFFPack {
     /**
      * Get number of levels
      *
-     * @ORM\access public
-     * @ORM\returns int
+     * @access public
+     * @returns int
      */
     function get_levels() {
         return $this->level + 1;
@@ -878,8 +878,8 @@ class LAFFPack {
     /**
      * Get total volume of packed boxes
      *
-     * @ORM\access public
-     * @ORM\returns float
+     * @access public
+     * @returns float
      */
     function get_packed_volume() {
         if(!isset($this->packed_boxes)) {
@@ -900,8 +900,8 @@ class LAFFPack {
     /**
      * Get number of levels
      *
-     * @ORM\access public
-     * @ORM\returns int
+     * @access public
+     * @returns int
      */
     function get_remaining_volume() {
         if(!isset($this->packed_boxes)) {
@@ -920,9 +920,9 @@ class LAFFPack {
     /**
      * Get dimensions of specified level
      *
-     * @ORM\access public
-     * @ORM\param int $level
-     * @ORM\returns array
+     * @access public
+     * @param int $level
+     * @returns array
      */
     function get_level_dimensions($level = 0) {
         if($level < 0 || $level > $this->level || !array_key_exists($level, $this->packed_boxes)) {
@@ -949,9 +949,9 @@ class LAFFPack {
     /**
      * Get longest edge from boxes
      *
-     * @ORM\access public
-     * @ORM\param array $edges Edges to select the longest from
-     * @ORM\returns array
+     * @access public
+     * @param array $edges Edges to select the longest from
+     * @returns array
      */
     function _calc_longest_edge($boxes, $edges = array('length', 'width', 'height')) {
         if(!isset($boxes) || !is_array($boxes)) {
@@ -981,8 +981,8 @@ class LAFFPack {
     /**
      * Calculate container dimensions
      *
-     * @ORM\access public
-     * @ORM\returns array
+     * @access public
+     * @returns array
      */
     function _calc_container_dimensions() {
         if(!isset($this->boxes)){
@@ -1014,11 +1014,11 @@ class LAFFPack {
     /**
      * Utility function to swap two elements in an array
      *
-     * @ORM\access public
-     * @ORM\param array $array
-     * @ORM\param mixed $el1 Index of item to be swapped
-     * @ORM\param mixed $el2 Index of item to swap with
-     * @ORM\returns array
+     * @access public
+     * @param array $array
+     * @param mixed $el1 Index of item to be swapped
+     * @param mixed $el2 Index of item to swap with
+     * @returns array
      */
     function _swap($array, $el1, $el2) {
         if(!array_key_exists($el1, $array) || !array_key_exists($el2, $array)) {
@@ -1035,9 +1035,9 @@ class LAFFPack {
     /**
      * Utility function that returns the total volume of a box / container
      *
-     * @ORM\access public
-     * @ORM\param array $box
-     * @ORM\returns float
+     * @access public
+     * @param array $box
+     * @returns float
      */
     function _get_volume($box)  {
         if(!is_array($box) || count(array_keys($box)) < 3) {
@@ -1052,10 +1052,10 @@ class LAFFPack {
     /**
      * Check if box fits in specified space
      *
-     * @ORM\access private
-     * @ORM\param array $box Box to fit in space
-     * @ORM\param array $space Space to fit box in
-     * @ORM\returns bool
+     * @access private
+     * @param array $box Box to fit in space
+     * @param array $space Space to fit box in
+     * @returns bool
      */
     private function _try_fit_box($box, $space)  {
         if(count($box) < 3) {
@@ -1081,10 +1081,10 @@ class LAFFPack {
      * Check if box fits in specified space
      * and rotate (3d) if necessary
      *
-     * @ORM\access public
-     * @ORM\param array $box Box to fit in space
-     * @ORM\param array $space Space to fit box in
-     * @ORM\returns bool
+     * @access public
+     * @param array $box Box to fit in space
+     * @param array $space Space to fit box in
+     * @returns bool
      */
     function _box_fits($box, $space) {
         $box = array_values($box);
@@ -1117,8 +1117,8 @@ class LAFFPack {
     /**
      * Start a new packing level
      *
-     * @ORM\access private
-     * @ORM\returns void
+     * @access private
+     * @returns void
      */
     private function pack_level() {
         $biggest_box_index = null;
@@ -1195,8 +1195,8 @@ class LAFFPack {
     /**
      * Fills space with boxes recursively
      *
-     * @ORM\access private
-     * @ORM\returns void
+     * @access private
+     * @returns void
      */
     private function _fill_space($space) {
 

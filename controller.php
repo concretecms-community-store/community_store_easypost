@@ -12,6 +12,11 @@ class Controller extends Package
     protected $appVersionRequired = '8.0';
     protected $pkgVersion = '2.0';
 
+    protected $pkgAutoloaderRegistries = array(
+        'src/CommunityStore' => 'Concrete\Package\CommunityStoreEasypost\Src\CommunityStore',
+    );
+
+
     public function on_start()
     {
         require 'vendor/autoload.php';
