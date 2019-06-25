@@ -663,8 +663,8 @@ class EasypostShippingMethod extends ShippingMethodTypeMethod
         $carrierFilter = trim($this->carrierFilter);
         $serviceFilter = trim($this->serviceFilter);
 
-        $carrierFilter = explode("\n", $carrierFilter);
-        $serviceFilter = explode("\n", $serviceFilter);
+        $carrierFilter = array_map('trim',explode("\n", $carrierFilter));
+        $serviceFilter = array_map('trim',explode("\n", $serviceFilter));
 
         $rateType = $this->getRateType();
 
@@ -676,7 +676,7 @@ class EasypostShippingMethod extends ShippingMethodTypeMethod
         if (!$invalid && $shipment && $shipment->rates && count($shipment->rates) > 0) {
             foreach ($shipment->rates as $rate) {
 
-                if (!$this->carrierFilter|| in_array($rate->carrier, $carrierFilter)) {
+                if (!$this->carrierFilter || in_array($rate->carrier, $carrierFilter)) {
                     if (!$this->serviceFilter || in_array($rate->service, $serviceFilter)) {
                         $offer = new StoreShippingMethodOffer();
 

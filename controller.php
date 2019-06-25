@@ -10,7 +10,7 @@ class Controller extends Package
 {
     protected $pkgHandle = 'community_store_easypost';
     protected $appVersionRequired = '8.0';
-    protected $pkgVersion = '2.0';
+    protected $pkgVersion = '2.0.1';
 
     protected $pkgAutoloaderRegistries = array(
         'src/CommunityStore' => 'Concrete\Package\CommunityStoreEasypost\Src\CommunityStore',
