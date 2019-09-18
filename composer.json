@@ -1,5 +1,5 @@
 {
     "require": {
-        "easypost/easypost-php": "^3.2"
+        "easypost/easypost-php": "~3.0"
     }
 }

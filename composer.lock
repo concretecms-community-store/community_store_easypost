@@ -1,24 +1,23 @@
 {
     "_readme": [
         "This file locks the dependencies of your project to a known state",
-        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
+        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "hash": "ca31fa6c6db60cd5d0196ad7d7f98cc7",
-    "content-hash": "c7a178eaabe5f550f818c572d953c366",
+    "content-hash": "8a3c9e4b13515d83c6786294955a711a",
     "packages": [
         {
             "name": "easypost/easypost-php",
-            "version": "3.2.1",
+            "version": "3.4.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/EasyPost/easypost-php.git",
-                "reference": "2bcf0b5ee7a440cb64ab1d3ddaf4ec21ed1404e5"
+                "reference": "517b6205c9316d67da2241345fa9d52b87ddedf4"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/EasyPost/easypost-php/zipball/2bcf0b5ee7a440cb64ab1d3ddaf4ec21ed1404e5",
-                "reference": "2bcf0b5ee7a440cb64ab1d3ddaf4ec21ed1404e5",
+                "url": "https://api.github.com/repos/EasyPost/easypost-php/zipball/517b6205c9316d67da2241345fa9d52b87ddedf4",
+                "reference": "517b6205c9316d67da2241345fa9d52b87ddedf4",
                 "shasum": ""
             },
             "require": {
@@ -51,7 +50,7 @@
                 "easypost",
                 "shipping"
             ],
-            "time": "2016-12-14 21:00:17"
+            "time": "2018-04-13T20:53:35+00:00"
         }
     ],
     "packages-dev": [],
