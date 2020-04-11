@@ -101,7 +101,7 @@ class EasypostShippingMethod extends ShippingMethodTypeMethod
     protected $noMatchDetails;
 
     /**
-     * @ORM\Column(type="float")
+     * @ORM\Column(type="float",nullable=true)
      */
     protected $noMatchRate;
 
@@ -304,7 +304,7 @@ class EasypostShippingMethod extends ShippingMethodTypeMethod
 
     public function getNoMatchRate()
     {
-        return $this->noMatchRate;
+        return $this->noMatchRate ? $this->noMatchRate : 0;
     }
 
     public function setNoMatchRate($noMatchRate)
@@ -388,7 +388,7 @@ class EasypostShippingMethod extends ShippingMethodTypeMethod
         $sm->setNoMatch($data['noMatch'] ? '1' : '0');
         $sm->setNoMatchLabel($data['noMatchLabel']);
         $sm->setNoMatchDetails($data['noMatchDetails']);
-        $sm->setNoMatchRate($data['noMatchRate']);
+        $sm->setNoMatchRate($data['noMatchRate'] ? $data['noMatch'] : 0);
 
         $sm->setFallbackHeight((int)$data['fallbackHeight']);
         $sm->setFallbackWidth((int)$data['fallbackWidth']);
@@ -396,7 +396,7 @@ class EasypostShippingMethod extends ShippingMethodTypeMethod
         $sm->setFallbackWeight((int)$data['fallbackWeight']);
         $sm->setCarrierFilter(trim($data['carrierFilter']));
         $sm->setServiceFilter(trim($data['serviceFilter']));
-        $sm->setAdjustmentFactor(trim($data['adjustmentFactor']));
+        $sm->setAdjustmentFactor($data['adjustmentFactor'] ? trim($data['adjustmentFactor']) : 0);
         $sm->setRateType(trim($data['rateType']));
 
         $em = \ORM::entityManager();
