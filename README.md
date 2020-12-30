@@ -1,4 +1,4 @@
-# community_store_easypost
+# Community Store Easypost
 Adds EasyPost.com integration to Concrete5 Community Store.
 
 https://www.easypost.com/
