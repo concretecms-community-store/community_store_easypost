@@ -1,4 +1,4 @@
-<?php defined('C5_EXECUTE') or die(_("Access Denied."));
+<?php defined('C5_EXECUTE') or die("Access Denied.");
 $dh = Core::make('helper/date');
 use \Concrete\Package\CommunityStore\Src\CommunityStore\Utilities\Price as Price;
 ?>
