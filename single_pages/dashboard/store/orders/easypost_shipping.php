@@ -10,10 +10,6 @@ use \Concrete\Package\CommunityStore\Src\CommunityStore\Utilities\Price as Price
 <div class="ccm-dashboard-header-buttons">
 </div>
 
-<?php if ($shoppingDisabled) { ?>
-    <p class="alert alert-warning text-center"><?php echo t('Cart and Ordering features are currently disabled. This setting can be changed via the');?> <a href="<?= \URL::to('/dashboard/store/settings#settings-checkout'); ?>"><?= t('settings page.');?></a></p>
-<?php } ?>
-
     <div class="ccm-dashboard-content-full">
 
         <?php if (!empty($orderList)) { ?>
@@ -229,7 +225,7 @@ use \Concrete\Package\CommunityStore\Src\CommunityStore\Utilities\Price as Price
 
             <?php if ($order->getShipmentID() && !$order->getTrackingID()) { ?>
                 <h3><?= t("Buy Shipping and Tracking")?></h3>
-                <form method="post">
+                <form method="post" class="mb-5">
                     <input type="hidden" name="action" value="buy" />
                     <input type="hidden" name="oID" value="<?= $order->getOrderID(); ?>" />
                     <button class="btn btn-primary btn-sm" type="submit"><?= t("Buy Shipping & Tracking")?></button>
@@ -256,7 +252,7 @@ use \Concrete\Package\CommunityStore\Src\CommunityStore\Utilities\Price as Price
 
 
 
-            <?php if ($shipment &&  $shipment->postage_label->label_url && !$shipment->refund_status) { ?>
+            <?php if ($shipment &&  $shipment->postage_label &&  $shipment->postage_label->label_url && !$shipment->refund_status) { ?>
                 <p>(<?= t('Click to open label in new window for printing'); ?>)</p>
                 <p>
                 <a href="<?= $shipment->postage_label->label_url; ?>" target="_blank"><img style="max-width: 100%;" src="<?= $shipment->postage_label->label_url; ?>" /></a>

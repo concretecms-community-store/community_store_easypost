@@ -379,13 +379,13 @@ class EasypostShippingMethod extends ShippingMethodTypeMethod
         $sm->setZip($data['zip']);
         $sm->setPhone($data['phone']);
 
-        if (is_array($data['countriesSelected'])) {
+        if (isset($data['countriesSelected']) && is_array($data['countriesSelected'])) {
             $sm->setCountriesSelected(implode(',', $data['countriesSelected']));
         } else {
             $sm->setCountriesSelected('');
         }
 
-        $sm->setNoMatch($data['noMatch'] ? '1' : '0');
+        $sm->setNoMatch(isset($data['noMatch']) ? '1' : '0');
         $sm->setNoMatchLabel($data['noMatchLabel']);
         $sm->setNoMatchDetails($data['noMatchDetails']);
         $sm->setNoMatchRate($data['noMatchRate'] ? $data['noMatch'] : 0);

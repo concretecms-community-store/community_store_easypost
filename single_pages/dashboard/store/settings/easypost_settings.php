@@ -25,7 +25,7 @@
 
     <div class="ccm-dashboard-form-actions-wrapper">
         <div class="ccm-dashboard-form-actions">
-            <button class="pull-right btn btn-success" type="submit" ><?= t('Save Settings')?></button>
+            <button class="pull-right btn btn-primary float-end" type="submit" ><?= t('Save Settings')?></button>
         </div>
     </div>
 

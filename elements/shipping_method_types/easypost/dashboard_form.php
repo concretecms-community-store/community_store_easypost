@@ -60,7 +60,7 @@ extract($vars); ?>
             <?= $form->label('fallbackWeight',t("Fallback Weight")); ?>
             <div class="input-group">
                 <?= $form->text('fallbackWeight',$smtm->getFallbackWeight()); ?>
-                <div class="input-group-addon">oz</div>
+                <div class="input-group-addon input-group-text">oz</div>
             </div>
         </div>
 
@@ -68,7 +68,7 @@ extract($vars); ?>
             <?= $form->label('fallbackWidth',t("Fallback Width")); ?>
             <div class="input-group">
                 <?= $form->text('fallbackWidth',$smtm->getFallbackWidth()); ?>
-                <div class="input-group-addon">in</div>
+                <div class="input-group-addon input-group-text">in</div>
             </div>
         </div>
 
@@ -76,7 +76,7 @@ extract($vars); ?>
             <?= $form->label('fallbackLength',t("Fallback Length")); ?>
             <div class="input-group">
                 <?= $form->text('fallbackLength',$smtm->getFallbackLength()); ?>
-                <div class="input-group-addon">in</div>
+                <div class="input-group-addon input-group-text">in</div>
             </div>
         </div>
 
@@ -84,7 +84,7 @@ extract($vars); ?>
             <?= $form->label('fallbackHeight',t("Fallback Height")); ?>
             <div class="input-group">
                 <?= $form->text('fallbackHeight',$smtm->getFallbackHeight()); ?>
-                <div class="input-group-addon">in</div>
+                <div class="input-group-addon input-group-text">in</div>
             </div>
         </div>
 
