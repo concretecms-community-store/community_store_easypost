@@ -54,13 +54,19 @@ extract($vars); ?>
 
     <div class="col-md-4">
 
+        <?php
+
+        $sizeunit = \Config::get('community_store.sizeUnit');
+        $storeweightunit = \Config::get('community_store.weightUnit');
+        ?>
+
         <h4><?= t('Fallback Size/Weights'); ?></h4>
         <p><?= t('If cart weight or size(s) are zero, assume the following values'); ?></p>
         <div class="form-group">
             <?= $form->label('fallbackWeight',t("Fallback Weight")); ?>
             <div class="input-group">
                 <?= $form->text('fallbackWeight',$smtm->getFallbackWeight()); ?>
-                <div class="input-group-addon input-group-text">oz</div>
+                <div class="input-group-addon input-group-text"><?= $storeweightunit;?></div>
             </div>
         </div>
 
@@ -68,7 +74,7 @@ extract($vars); ?>
             <?= $form->label('fallbackWidth',t("Fallback Width")); ?>
             <div class="input-group">
                 <?= $form->text('fallbackWidth',$smtm->getFallbackWidth()); ?>
-                <div class="input-group-addon input-group-text">in</div>
+                <div class="input-group-addon input-group-text"><?= $sizeunit; ?></div>
             </div>
         </div>
 
@@ -76,7 +82,7 @@ extract($vars); ?>
             <?= $form->label('fallbackLength',t("Fallback Length")); ?>
             <div class="input-group">
                 <?= $form->text('fallbackLength',$smtm->getFallbackLength()); ?>
-                <div class="input-group-addon input-group-text">in</div>
+                <div class="input-group-addon input-group-text"><?= $sizeunit; ?></div>
             </div>
         </div>
 
@@ -84,7 +90,7 @@ extract($vars); ?>
             <?= $form->label('fallbackHeight',t("Fallback Height")); ?>
             <div class="input-group">
                 <?= $form->text('fallbackHeight',$smtm->getFallbackHeight()); ?>
-                <div class="input-group-addon input-group-text">in</div>
+                <div class="input-group-addon input-group-text"><?= $sizeunit; ?></div>
             </div>
         </div>
 
@@ -109,7 +115,7 @@ extract($vars); ?>
             <div class="form-group">
                 <?= $form->label('noMatchRate',t("Rate")); ?>
                 <div class="input-group">
-                    <div class="input-group-addon">
+                    <div class="input-group-addon input-group-text">
                         <?=  Config::get('community_store.symbol');?>
                     </div>
                     <?= $form->text('noMatchRate',$smtm->getNoMatchRate()); ?>

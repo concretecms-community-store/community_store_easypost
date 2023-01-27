@@ -2,8 +2,7 @@
 
 namespace Concrete\Package\CommunityStoreEasypost\Src\CommunityStore\Shipping\Method\Types;
 
-use Core;
-use Config;
+use Concrete\Core\Support\Facade\Config;
 use Concrete\Package\CommunityStore\Src\CommunityStore\Shipping\Method\ShippingMethodTypeMethod;
 use Concrete\Package\CommunityStore\Src\CommunityStore\Cart\Cart as StoreCart;
 use Concrete\Package\CommunityStore\Src\CommunityStore\Customer\Customer as StoreCustomer;
@@ -408,7 +407,7 @@ class EasypostShippingMethod extends ShippingMethodTypeMethod
 
     public function dashboardForm($shippingMethod = null)
     {
-        $this->set('form', Core::make("helper/form"));
+        $this->set('form', \Core::make("helper/form"));
         $this->set('smt', $this);
         if (is_object($shippingMethod)) {
             $smtm = $shippingMethod->getShippingMethodTypeMethod();
@@ -439,12 +438,12 @@ class EasypostShippingMethod extends ShippingMethodTypeMethod
 
     public function getOffers() {
 
-        //$totalWeight = number_format(StoreCart::getCartWeight('oz'), 2, '.', '');
+        $totalWeight = number_format(StoreCart::getCartWeight('oz'), 2, '.', '');
 
         $customer = new StoreCustomer();
 
-        $sizeunit = \Config::get('community_store.sizeUnit');
-        $storeweightunit = \Config::get('community_store.weightUnit');
+        $sizeunit = Config::get('community_store.sizeUnit');
+        $storeweightunit = Config::get('community_store.weightUnit');
         $weightmultiplier = 1;
         $sizemultiplier = 1;
 
@@ -468,15 +467,15 @@ class EasypostShippingMethod extends ShippingMethodTypeMethod
 
         $invalid = false;
 
-//        if ($totalWeight <= 0 ) {
-//            if ($this->getFallbackWeight() > 0) {
-//                $totalWeight = $this->getFallbackWeight();
-//            }
-//        }
+        if ($totalWeight <= 0 ) {
+            if ($this->getFallbackWeight() > 0) {
+                $totalWeight = $this->getFallbackWeight();
+            }
+        }
 
-//        if ($totalWeight <= 0) {
-//            $invalid = true;
-//        }
+        if ($totalWeight <= 0) {
+            $invalid = true;
+        }
 
         if (!$invalid) {
             try {
@@ -514,7 +513,7 @@ class EasypostShippingMethod extends ShippingMethodTypeMethod
                 $seperateboxes = array();
                 $packboxes = array();
 
-                $multipleParcels = \Config::get('community_store_easypost.multipleParcels');
+                $multipleParcels = Config::get('community_store_easypost.multipleParcels');
 
                 foreach ($cartitems as $cartitem) {
 
@@ -572,7 +571,7 @@ class EasypostShippingMethod extends ShippingMethodTypeMethod
                     }
 
                 }
-
+                
                 $boxesfingerprint = serialize(array_merge($seperateboxes, $packboxes));
 
                 $shipping_fingerprint_data = array('to' => $to_address_values, 'from' => $from_address_values, 'parcel' => $boxesfingerprint, 'lastorderid'=>$lastorderid);
@@ -635,7 +634,7 @@ class EasypostShippingMethod extends ShippingMethodTypeMethod
                     }
 
 
-                    if (version_compare(\Config::get('concrete.version'), '8.0', '>=')) {
+                    if (version_compare(Config::get('concrete.version'), '8.0', '>=')) {
                         $shippingcache->set($shipment)->expiresAfter(60 * 5)->save(); // expire after 5 minutes
                     } else {
                         $shippingcache->set($shipment, 60 * 5); // expire after 5 minutes

@@ -1,9 +1,9 @@
 <?php
 namespace Concrete\Package\CommunityStoreEasypost;
 
-use Package;
-use SinglePage;
+use Concrete\Core\Package\Package;
 use Whoops\Exception\ErrorException;
+use Concrete\Core\Page\Single as SinglePage;
 use Concrete\Package\CommunityStore\Src\CommunityStore\Shipping\Method\ShippingMethodType as StoreShippingMethodType;
 
 class Controller extends Package
@@ -37,7 +37,7 @@ class Controller extends Package
             throw new ErrorException(t('Third party libraries not installed. Use a release version of this add-on with libraries pre-installed, or run composer install against the package folder.'));
         }
 
-        $installed = Package::getInstalledHandles();
+        $installed = \Concrete\Core\Support\Facade\Package::getInstalledHandles();
         if(!(is_array($installed) && in_array('community_store',$installed)) ) {
             throw new ErrorException(t('This package requires that Community Store be installed'));
         } else {
@@ -59,7 +59,7 @@ class Controller extends Package
         if ($pm) {
             $pm->delete();
         }
-        $pkg = parent::uninstall();
+        parent::uninstall();
     }
 
 }
