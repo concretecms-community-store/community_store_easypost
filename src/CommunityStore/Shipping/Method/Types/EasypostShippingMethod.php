@@ -528,31 +528,49 @@ class EasypostShippingMethod extends ShippingMethodTypeMethod
                     }
                 }
 
+
                 if (!empty($packboxes)) {
                     $combinedweight = 0;
                     $laff = new LAFFPack();
 
                     $boxes = array();
 
-                    foreach($packboxes as $box) {
-                        $combinedweight += $box->getWeight();
 
-                        $boxes[] = array(
-                            "length" => $box->getLength() ,
-                            "width" => $box->getWidth() ,
-                            "height" => $box->getHeight(),
-                        );
+                    if (count($packboxes) > 1) {
+                        foreach ($packboxes as $box) {
+                            $combinedweight += $box->getWeight();
 
+                            $sizes = [$box->getLength(), $box->getWidth(), $box->getHeight()];
+                            sort($sizes);
+
+                            $boxes[] = array(
+                                "length" => $sizes[1],
+                                "width" => $sizes[2],
+                                "height" => $sizes[0],
+                            );
+
+                        }
+
+                        $laff->pack($boxes);
+                        $dimensions = $laff->get_container_dimensions();
+
+                    } else {
+
+                        $sizes = [$packboxes[0]->getLength(), $packboxes[0]->getWidth(), $packboxes[0]->getHeight()];
+                        sort($sizes);
+
+                        $dimensions['length'] = $sizes[1];
+                        $dimensions['width'] = $sizes[2];
+                        $dimensions['height'] = $sizes[0];
+                        $combinedweight = $packboxes[0]->getWeight();
                     }
-
-                    $laff->pack($boxes);
-                    $dimensions = $laff->get_container_dimensions();
 
                     $parcel_sizes = [
                         "length" => $dimensions['length'] * $sizemultiplier,
                         "width" => $dimensions['width'] * $sizemultiplier,
                         "height" => $dimensions['height'] * $sizemultiplier,
                         "weight" => $combinedweight * $weightmultiplier];
+
 
                     if (!$parcel_sizes['length']) {
                         $parcel_sizes['length'] = $this->getFallbackLength() * $sizemultiplier;
@@ -571,7 +589,7 @@ class EasypostShippingMethod extends ShippingMethodTypeMethod
                     }
 
                 }
-                
+
                 $boxesfingerprint = serialize(array_merge($seperateboxes, $packboxes));
 
                 $shipping_fingerprint_data = array('to' => $to_address_values, 'from' => $from_address_values, 'parcel' => $boxesfingerprint, 'lastorderid'=>$lastorderid);
@@ -632,7 +650,6 @@ class EasypostShippingMethod extends ShippingMethodTypeMethod
                             ]
                         );
                     }
-
 
                     if (version_compare(Config::get('concrete.version'), '8.0', '>=')) {
                         $shippingcache->set($shipment)->expiresAfter(60 * 5)->save(); // expire after 5 minutes
@@ -776,6 +793,7 @@ class LAFFPack {
                     $this->container_dimensions['width'] = $container['width'];
 
                     // Note: do NOT set height, it will be calculated on-the-go
+                    $this->container_dimensions['height'] = 0;
                 }
             }
         }
@@ -810,6 +828,7 @@ class LAFFPack {
                 $this->container_dimensions['width'] = $container['width'];
 
                 // Note: do NOT set height, it will be calculated on-the-go
+                $this->container_dimensions['height'] = 0;
             }
         }
 
