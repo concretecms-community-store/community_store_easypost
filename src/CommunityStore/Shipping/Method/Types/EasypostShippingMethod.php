@@ -461,6 +461,10 @@ class EasypostShippingMethod extends ShippingMethodTypeMethod
             $weightmultiplier *= 35.274;
         }
 
+        if ($storeweightunit == 'g') {
+            $weightmultiplier *= 0.035274;
+        }
+
         if ($storeweightunit =='lb') {
             $weightmultiplier *= 16;
         }

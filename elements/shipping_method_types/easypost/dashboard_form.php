@@ -152,7 +152,7 @@ extract($vars); ?>
             <?= $form->label('adjustmentFactor',t("Price Adjustment Factor")); ?>
             <div class="input-group">
                 <?= $form->text('adjustmentFactor',$smtm->getAdjustmentFactor()); ?>
-                <div class="input-group-addon">%</div>
+                <div class="input-group-addon input-group-text">%</div>
             </div>
         </div>
 
